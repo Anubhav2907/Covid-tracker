@@ -13,7 +13,7 @@ import Table from "./Table";
 import { sortData, prettyPrintStat } from "./util";
 import numeral from "numeral";
 import Map from "./Map";
-import "leaflet/dist/leaflet.css"
+import "leaflet/dist/leaflet.css";
 const App = () => {
   const [country, setInputCountry] = useState("worldwide");
   const [countryInfo, setCountryInfo] = useState({});
@@ -21,8 +21,8 @@ const App = () => {
   const [mapCountries, setMapCountries] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [casesType, setCasesType] = useState("cases");
-  const [mapCenter, setMapCenter] = useState({ lat: 34.80746, lng: -40.4796 });
-  const [mapZoom, setMapZoom] = useState(2);
+  const [mapCenter, setMapCenter] = useState({ lat: 35.9375, lng: 14.4796 });
+  const [mapZoom, setMapZoom] = useState(2.4);
 
   useEffect(() => {
     fetch("https://disease.sh/v3/covid-19/all")
@@ -65,7 +65,11 @@ const App = () => {
       .then((data) => {
         setInputCountry(countryCode);
         setCountryInfo(data);
-        setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        if (data.countryInfo.lat && data.countryInfo.long) {
+          setMapCenter([data.countryInfo.lat, data.countryInfo.long]);
+        } else {
+          setMapCenter([35.9375, 14.4796]);
+        }
         setMapZoom(4);
       });
   };
@@ -113,7 +117,12 @@ const App = () => {
             total={numeral(countryInfo.deaths).format("0.0a")}
           />
         </div>
-        <Map countries={mapCountries} center={mapCenter} zoom={mapZoom}></Map>
+        <Map
+          casesType={casesType}
+          countries={mapCountries}
+          center={mapCenter}
+          zoom={mapZoom}
+        ></Map>
       </div>
       <Card className="app__right">
         <CardContent>
@@ -121,7 +130,7 @@ const App = () => {
             <h3>Live Cases by Country</h3>
             <Table countries={tableData} />
             <h3>Worldwide new {casesType}</h3>
-            <LineGraph casesType={casesType} />
+            <LineGraph className="app__graph" casesType={casesType} />
           </div>
         </CardContent>
       </Card>
