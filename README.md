@@ -1,4 +1,4 @@
-# React COVID Tracker
+# Covid-tracker
 
 A web application which gives live info of covid cases, recovery and deaths worldwide along with charts and maps.
 ## Available Scripts
